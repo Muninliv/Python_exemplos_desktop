@@ -24,12 +24,20 @@ def atualizar_resultado():
     cor_favorita = combo_cor.get()
 
 #montar mensagem final
-    mensagem = f"{saudacao} {nome}! Você prefere {preferencia}."
+    mensagem = f"{saudacao} {nome}! \n Você prefere {preferencia}."
     if cor_favorita:
         mensagem += f" Sua cor favorita é {cor_favorita}."
 
     # Atualizar o rótulo com a mensagem final
     label_resultado.config(text=mensagem)
+
+    def limpar_campos():
+        caixa_texto.delete(0, tk.END)
+        var_radio.set("Café")
+        var_check_saudacao.set(False)
+        var_check_personalizada.set(False)
+        combo_cor.set("")
+        label_resultado.config(text="")
 
 
 # Criar a janela principal
@@ -42,6 +50,58 @@ label_nome = tk.Label(janela, text="Digite seu nome:")
 label_nome.pack(pady=5)
 caixa_texto = tk.Entry(janela, width=40)
 caixa_texto.pack(pady=5)
+
+# Criar botões de rádio para preferências
+label_preferencia = tk.Label(janela, text="Escolha sua preferência")
+label_preferencia.pack(pady=5)
+
+var_radio = tk.StringVar(value="Café")
+radio_cafe = ttk.Radiobutton(janela, text="Café", variable=var_radio, value="Café")
+radio_cha= ttk.Radiobutton(janela, text="Chá", variable=var_radio, value="Chá")
+radio_suco = ttk.Radiobutton(janela, text="Suco", variable=var_radio, value="Suco")
+radio_agua = ttk.Radiobutton(janela, text="Água", variable=var_radio, value="Água")
+radio_cafe.pack()
+radio_cha.pack()  
+radio_suco.pack()
+radio_agua.pack()
+
+# Criar uma caixa de seleção (Checkbox)
+var_check_saudacao = tk.BooleanVar(value=True)
+check_saudacao = tk.Checkbutton(janela, text="Saudação informal", variable=var_check_saudacao)
+check_saudacao.pack(pady=5)
+
+# Criar uma caixa de seleção (Checkbox) para saudação personalizada
+var_check_personalizada = tk.BooleanVar(value=False)    
+check_personalizada = tk.Checkbutton(janela, text="Usar saudação personalizada", variable=var_check_personalizada)
+check_personalizada.pack(pady=5)
+
+# Criar uma lista suspensa (Combobox) para cor favorita
+label_cor = tk.Label(janela, text="Selecione sua cor favorita:")
+label_cor.pack(pady=5)
+
+combo_cor = ttk.Combobox(janela, values=["Vermelho", "Verde", "Azul", "Amarelo", "Preto", "Branco"])
+combo_cor.set("Escolha uma cor")
+combo_cor.pack(pady=5)
+
+# Criar um botão para atualizar o resultado
+botao_atualizar = tk.Button(janela, text="Atualizar Resultado", command = atualizar_resultado)
+botao_atualizar.pack(pady=10)
+
+# Criar um rótulo para mostrar o resultado
+label_resultado = tk.Label(janela, text="", wraplength=300, justify="center")
+label_resultado.pack(pady=20)
+
+# Criar um botão para limpar os campos
+def limpar_campos():
+    caixa_texto.delete(0, tk.END)
+    var_radio.set("Café")
+    var_check_saudacao.set(False)
+    var_check_personalizada.set(False)
+    combo_cor.set("")
+    label_resultado.config(text="")
+
+botao_limpar = tk.Button(janela, text="Limpar Campos", command=limpar_campos)
+botao_limpar.pack(pady=10)
 
 # Executar a janela principal
 janela.mainloop()
