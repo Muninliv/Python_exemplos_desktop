@@ -12,10 +12,10 @@ def resource_path(relative_path):
         base_path = sys._MEIPASS
     except Exception:
         # Caso não estiver usando PyInstaller, usa o caminho do diretório atual
-        base_path = os.path.abspath(".")    
+        base_path = os.path.abspath(".")
 
-        # Retorna o caminho completo do recurso
-        return os.path.join(base_path, relative_path)
+    # Retorna o caminho completo do recurso
+    return os.path.join(base_path, relative_path)
 
 class Calculadora:
     def __init__(self):
@@ -28,13 +28,14 @@ class Calculadora:
         self.cor_fundo = 'black'  # Cor de fundo da janela
         self.cor_botao = 'secondary'  # Cor dos botões
         self.cor_texto = 'white'  # Cor do texto
-        self.cor_operador = 'warning' # Cor dos botões de operadores
+        self.cor_operador = 'warning'  # Cor dos botões de operadores
         self.fonte_padrao = ('Roboto', 18)  # Fonte padrão para os textos
         self.fonte_display = ('Roboto', 36)  # Fonte para o display
 
         # Ícone da janela
         icon_path = resource_path("4-py-calculadora_(Alunos)/calc.ico")  # Obtém o caminho do ícone
-        self.janela.iconbitmap(icon_path) # type: ignore # Define o ícone da janela
+        if os.path.exists(icon_path):
+            self.janela.iconbitmap(icon_path)  # Define o ícone da janela
 
         # Frame do display
         self.frame_display = ttk.Frame(self.janela)  # Cria um frame para o display
@@ -45,7 +46,7 @@ class Calculadora:
             self.frame_display,
             text='',
             font=self.fonte_display,
-            anchor='e', # Alinha o texto à direita
+            anchor='e',  # Alinha o texto à direita
             padding=(20, 10)  # Adiciona um preenchimento interno ao rótulo
         )
         self.display.pack(fill='both', expand=True)  # Adiciona o display ao frame
@@ -70,7 +71,7 @@ class Calculadora:
                 botao = ttk.Button(
                     self.frame_botoes,
                     text=texto,
-                    style=estilo, 
+                    style=estilo,
                     width=10,  # Largura do botão
                     command=partial(self.interpretar_botao, texto)  # Define o comando para o botão
                 )
@@ -88,13 +89,14 @@ class Calculadora:
 
         # Carregando e exibindo a imagem
         imagem_path = resource_path("Senai.png")  # Obtém o caminho da imagem SENAI
-        imagem = Image.open(imagem_path)  # Abre a imagem usando PIL
-        imagem = imagem.resize((300, 100), Image.LANCZOS)  # Redimensiona a imagem mantendo a qualidade
-        imagem = ImageTk.PhotoImage(imagem)  # Converte a imagem para o formato compatível com tkinter
+        if os.path.exists(imagem_path):
+            imagem = Image.open(imagem_path)  # Abre a imagem usando PIL
+            imagem = imagem.resize((300, 100), Image.LANCZOS)  # Redimensiona a imagem mantendo a qualidade
+            imagem = ImageTk.PhotoImage(imagem)  # Converte a imagem para o formato compatível com tkinter
 
-        label_imagem = ttk.Label(self.frame_imagem, image=ImageTk, text="")  # Cria um rótulo para exibir a imagem
-        label_imagem.image = ImageTk  # Armazena uma referência para a imagem (necessário para evitar que a imagem seja destruída pelo garbage collector)
-        label_imagem.pack()  # Adiciona o rótulo ao frame
+            label_imagem = ttk.Label(self.frame_imagem, image=imagem, text="")  # Cria um rótulo para exibir a imagem
+            label_imagem.image = imagem  # Armazena a referência da imagem
+            label_imagem.pack()  # Adiciona o rótulo ao frame
 
         # Frame para o seletor de temas
         self.frame_tema = ttk.Frame(self.janela)
@@ -104,7 +106,8 @@ class Calculadora:
         self.label_tema.pack(side='top', pady=(0, 5))
 
         # Lista de temas (ComboBox)
-        self.temas = ['darkly', 'cosmo', 'flatly', 'journal', 'litera', 'lumen', 'minty', 'pulse', 'sandstone', 'united', 'yeti', 'morph', 'simplex', 'cerculean']
+        self.temas = ['darkly', 'cosmo', 'flatly', 'journal', 'litera', 'lumen',
+                      'minty', 'pulse', 'sandstone', 'united', 'yeti', 'morph', 'simplex', 'cerculean']
         self.seletor_tema = ttk.Combobox(self.frame_tema, values=self.temas, state='readonly')
         self.seletor_tema.set('darkly')  # Define o tema padrão
         self.seletor_tema.pack(side='top', fill='x')
@@ -122,18 +125,18 @@ class Calculadora:
         """ Interpreta o botão pressionado e atualiza o display """
         texto_atual = self.display.cget("text")  # Obtém o texto atual do display
 
-        if (valor == 'C'):
-            # Limpa o display 
-            self.display.configure(text='') 
-        elif (valor == '←'):
+        if valor == 'C':
+            # Limpa o display
+            self.display.configure(text='')
+        elif valor == '←':
             # Apaga o último caractere do display
-            self.display.configure(text=texto_atual[:-1])  
-        elif (valor == '='):
+            self.display.configure(text=texto_atual[:-1])
+        elif valor == '=':
             # Calcula o resultado da expressão
-            self.calcular()  
-        elif (valor =='()'):
+            self.calcular()
+        elif valor == '()':
             # Adiciona parenteses ao display dependendo do contexto
-            if texto_atual or texto_atual[-1] in '+-/^x':
+            if not texto_atual or texto_atual[-1] in '+-/^x':
                 self.display.configure(text=texto_atual + '(')
             elif texto_atual[-1] in '0123456789':
                 self.display.configure(text=texto_atual + ')')
@@ -144,17 +147,16 @@ class Calculadora:
     def calcular(self):
         """ Realiza o cálculo da expressão no display """
         expressao = self.display.cget("text")  # Obtém a expressão do display
-        expressao = expressao.replace('×', '*').replace('^', '**')  # Substitui operadores para a sintaxe Python
+        expressao = expressao.replace('x', '*').replace('^', '**')  # Corrigido para aceitar "x"
 
         try:
             # Avalia a expressão e exibe o resultado
             resultado = eval(expressao)
             self.display.configure(text=str(resultado))
-        except:
+        except Exception:
             # Exibe mensagem de erro caso a avaliação falhe
-            self.display.configure(text="Erro")  
-
+            self.display.configure(text="Erro")
 
 # Inicia a aplicação
 if __name__ == "__main__":
-    Calculadora()  # Instancia a classe Calculadora e inicia o aplicativo
+    Calculadora()
