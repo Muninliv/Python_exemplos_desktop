@@ -37,17 +37,17 @@ class FormularioInscricao:
         ttk.Label(self.frame, text="Formulário de Inscrição", font=("TkDefaultFont", 16, "bold")).pack(pady=10)
 
         # Campo Nome
-        ttk.Label(self.frame, text="Nome:").pack(anchor=W, pady=(10, 0))
+        ttk.Label(self.frame, text="Nome").pack(anchor=W, pady=(10, 0))
         self.nome_entry = ttk.Entry(self.frame, width=50)
         self.nome_entry.pack(fill=X)
 
         # Campo Email
-        ttk.Label(self.frame, text="Email:").pack(anchor=W, pady=(10, 0))
+        ttk.Label(self.frame, text="Email").pack(anchor=W, pady=(10, 0))
         self.email_entry = ttk.Entry(self.frame, width=50)
         self.email_entry.pack(fill=X)
 
         # Campo Idade
-        ttk.Label(self.frame, text="Idade:").pack(anchor=W, pady=(10, 0))
+        ttk.Label(self.frame, text="Idade").pack(anchor=W, pady=(10, 0))
         self.idade_entry = ttk.Entry(self.frame, width=50)
         self.idade_entry.pack(fill=X)
 
@@ -85,7 +85,7 @@ class FormularioInscricao:
         self.dados_frame = ttk.Frame(self.frame)
         self.dados_frame.pack(pady=10, fill=X)
 
-        # Labels para os dados
+        # Labels para exibir os dados
         self.nome_label = ttk.Label(self.dados_frame, text="", anchor=CENTER)
         self.nome_label.pack(fill=X)
 
@@ -99,8 +99,8 @@ class FormularioInscricao:
         self.lembrar_label.pack(fill=X)
 
     def set_icon(self):
-        icon_ico = resource_path("logo.ico")
-        icon_png = resource_path("logo.png")
+        icon_ico = resource_path("3a-ttkbootstap_(Alunos)/logo.ico")
+        icon_png = resource_path("3a-ttkbootstap_(Alunos)/logo.png")
 
         if os.path.exists(icon_ico):
             self.master.iconbitmap(icon_ico)
@@ -112,7 +112,7 @@ class FormularioInscricao:
             print("Arquivo de ícone não encontrado.")
 
     def enviar(self):
-        # Atualiza os labels com os dados coletados
+        # Atualiza as Labels com os dados coletados
         self.nome_label.config(text=f"Nome: {self.nome_entry.get()}")
         self.email_label.config(text=f"Email: {self.email_entry.get()}")
         self.idade_label.config(text=f"Idade: {self.idade_entry.get()}")
@@ -132,7 +132,7 @@ class FormularioInscricao:
         self.lembrar_label.config(text="")
 
     def mudar_tema(self, event):
-        """ Função para mudar o tema quando um novo é selecionado no ComboBox """
+        # Função para mudar o tema quando um novo é selecionado no ComboBox
         novo_tema = self.tema_var.get()
         self.style.theme_use(novo_tema)
 
